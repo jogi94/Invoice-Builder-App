@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}{% if pageFlag == 'add' %}Client Add Page{% elif pageFlag == 'view' %}Client View Page{% else %}Client Edit Page{% endif %}{% endblock %}
+{% load humanize %}
+{% block content %}
+<div class="table-responsive p-4">
+	<table class="table ">
+		<thead>
+			{% if pageFlag == 'view' %}	
+			<tr>
+				<th scope="col" class="text-muted">Name</th>
+				<th scope="col" class="text-muted">GST No </th>												
+				<th scope="col" class="text-muted">Address</th>
+				<th scope="col" class="text-muted">Email</th>
+				<th scope="col" class="text-muted">Mobile No</th>
+				<th scope="col" class="text-muted">Action</th>
+			</tr>
+			{% endif %}
+		</thead>
+		<tbody  class="text-muted">
+			{% if pageFlag == 'add' %}
+			<tr>
+				<form action="{% url 'invoiceApp:addClientsSubmitUrl' %}" method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+					{{form|crispy}}
+					<input type="hidden" name="submitType" value="new">
+					<input type="hidden" name="redirectUrl"  value="{{request.get_full_path}}">
+					<td><button class="btn btn-success mt-2" type="submit">Submit</button></td>
+				</form>
+			</tr>
+			{% elif pageFlag == 'view' %}					
+			<tr>
+				<td >{% if clients.client_name %}{{clients.client_name}}{% endif %}</td>
+				<td >{% if clients.GST %}{{clients.GST}}{% endif %}</td>
+				<td >{% if clients.address  %}{{clients.address}}{% endif %}</td>
+				<td >{% if clients.email_id %}{{clients.email_id}}{% endif %}</td>
+				<td >{% if clients.mobile_number %}{{clients.mobile_number}}{% endif %}</td>
+				<td><a class="btn btn-primary" href="{% url 'invoiceApp:clientEditUrl' clients.id %}?action=edit">Edit</a></td>
+			</tr>
+			{% else %}
+			<!-- Edit -->
+			<tr>
+				<form action="{% url 'invoiceApp:addClientsSubmitUrl' %}" method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+					<input type="hidden" name="dataID" value="{{clients.pk}}">
+					<input type="hidden" name="submitType" value="update">
+					<input type="hidden" name="redirectUrl"  value="{{request.get_full_path}}">
+					{{form|crispy}}
+					<td><button class="btn btn-success mt-2" type="submit">Submit</button></td>
+				</form>
+			</tr>
+			{% endif %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}
+{% block additionalJS %}
+{% if pageFlag == 'edit' %}
+<script type="text/javascript">
+	window.onload = function(e){
+		document.getElementById('id_client_name').value = '{% if clients.client_name %}{{clients.client_name}}{% endif %}';
+		document.getElementById('id_GST').value = '{% if clients.GST %}{{clients.GST}}{% endif %}';
+		document.getElementById('id_address').value = '{% if clients.address %}{{clients.address.pk}}{% endif %}';
+		document.getElementById('id_email_id').value = '{% if clients.email_id %}{{clients.email_id}}{% endif %}';
+		document.getElementById('id_mobile_number').value = '{% if clients.mobile_number %}{{clients.mobile_number}}{% endif %}';
+	};
+</script>
+{% endif %}
+{% endblock %}

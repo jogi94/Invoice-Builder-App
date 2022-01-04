@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{% if pageFlag == 'add' %}Office Location Add Page{% elif pageFlag == 'view' %}Office Location View Page{% else %}Office Location Edit Page{% endif %}{% endblock %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="table-responsive p-4">
+	<table class="table ">
+		<thead>
+			{% if pageFlag == 'view' %}
+			<tr>
+				<th scope="col" class="text-muted">account_name</th>
+				<th scope="col" class="text-muted">account_number</th>
+				<th scope="col" class="text-muted">bank_name</th>
+				<th scope="col" class="text-muted">branch</th>
+				<th scope="col" class="text-muted">IFSC_code</th>
+				<th scope="col" class="text-muted">Action</th>
+			</tr>
+			{% endif %}
+		</thead>
+		<tbody  class="text-muted">
+			{% if pageFlag == 'add' %}
+			<tr>
+				<form action="{% url 'invoiceApp:ourBankDetailsAddEditSubmitUrl' %}" method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+
+					<input type="hidden" name="redirectUrl"  value="{{request.get_full_path}}">
+					{{form|crispy}}
+					<td><button class="btn btn-success mt-2" type="submit">Submit</button></td>
+				</form>
+			</tr>
+			<!-- View -->
+			{% elif pageFlag == 'view' %}					
+			<tr>
+				<td >{% if bankDetails.account_name %}{{bankDetails.account_name}}{% else %}-{% endif %}</td>
+				<td >{% if bankDetails.account_number %}{{bankDetails.account_number}}{% else %}-{% endif %}</td>
+				<td >{% if bankDetails.bank_name %}{{bankDetails.bank_name}}{% else %}-{% endif %}</td>
+				<td >{% if bankDetails.branch %}{{bankDetails.branch}}{% else %}-{% endif %}</td>
+				<td >{% if bankDetails.IFSC_code %}{{bankDetails.IFSC_code}}{% else %}-{% endif %}</td>
+				<td ><a href="{% url 'invoiceApp:bankDetailEditUrl' bankDetails.id %}?action=edit">Edit</a></td>
+			</tr>
+			{% else %}
+
+			<!-- Edit -->
+			<tr>
+				<form action="{% url 'invoiceApp:ourBankDetailsAddEditSubmitUrl' %}" method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+					<input type="hidden" name="dataID" value="{{bankDetails.pk}}">
+					<input type="hidden" name="submitType" value="update">
+					<input type="hidden" name="redirectUrl"  value="{{request.get_full_path}}">
+					{{form|crispy}}
+					<td><button type="submit" class="btn btn-success mt-2">Submit</button></td>
+				</form>
+			</tr>
+			{% endif %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}
+
+{% block additionalJS %}
+{% if pageFlag == 'edit' %}
+<script type="text/javascript">
+	window.onload = function(e){
+		document.getElementById('id_account_name').value = '{% if bankDetails.account_name %}{{bankDetails.account_name}}{% endif %}'
+		document.getElementById('id_account_number').value = '{% if bankDetails.account_number %}{{bankDetails.account_number}}{% endif %}';
+		document.getElementById('id_bank_name').value = '{% if bankDetails.bank_name %}{{bankDetails.bank_name}}{% endif %}';
+		document.getElementById('id_branch').value = '{% if bankDetails.branch %}{{bankDetails.branch}}{% endif %}';
+		document.getElementById('id_IFSC_code').value = '{% if bankDetails.IFSC_code %}{{bankDetails.IFSC_code}}{% endif %}';
+	};
+</script>
+{% endif %}
+{% endblock %}

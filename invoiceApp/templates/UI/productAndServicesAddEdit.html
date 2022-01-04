@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}{% if pageFlag == 'add' %}Product And Services Add Page{% elif pageFlag == 'view' %}Product And Services View Page{% else %}Product And Services Edit Page{% endif %}{% endblock %}
+{% load humanize %}
+{% block content %}
+<div class="table-responsive p-4">
+	<table class="table ">
+		<thead>
+			{% if pageFlag == 'view' %}
+			<tr>
+				<td scope="col" class="text-muted"><strong>Title</strong></td>
+				<td scope="col" class="text-muted"><strong>Description</strong></td>
+				<td scope="col" class="text-muted">HSN</td>												
+				<td scope="col" class="text-muted">Action</td>
+			</tr>
+			{% endif %}
+		</thead>
+		<tbody  class="text-muted">
+			{% if pageFlag == 'add' %}
+			<tr>
+				<form action="{% url 'invoiceApp:productAndServicesAddEditSubmitFormUrl' %}" method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+
+					<input type="hidden" name="redirectUrl"  value="{{request.get_full_path}}">
+					<!-- <td><input type="text" name="description"></td>
+					<td><input type="number" title="Enter Only Numbers." name="HSN"></td> -->
+					{{ form|crispy }}
+					<td><button class="btn btn-success mt-2" type="submit">Submit</button></td>
+				</form>
+			</tr>
+			{% elif pageFlag == 'view' %}					
+			<tr>
+				<td >{% if productAndService.title  %}{{productAndService.title}}{% endif %}</td>
+				<td >{% if productAndService.description  %}{{productAndService.description}}{% endif %}</td>
+				<td >{% if productAndService.HSN  %}{{productAndService.HSN}}{% endif %}</td>
+				<td><a class="btn btn-primary" href="{% url 'invoiceApp:editViewProductAndServicesUrl' productAndService.id %}?action=edit">Edit</a></td>
+			</tr>
+			{% else %}
+			<!-- Edit -->
+			<tr>
+				<form action="{% url 'invoiceApp:productAndServicesAddEditSubmitFormUrl' %}" method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+					<input type="hidden" name="dataID" value="{{productAndService.pk}}">
+					<input type="hidden" name="submitType" value="update">
+					<input type="hidden" name="redirectUrl"  value="{{request.get_full_path}}">
+					<!-- <td><input type="text" name="description" value="{{productAndService.description}}"></td>
+					<td><input type="number" name="HSN" value="{{productAndService.HSN}}"></td> -->
+					
+					{{ form|crispy }}
+					<td><button class="btn btn-success mt-2" type="submit">Submit</button></td>
+				</form>
+			</tr>
+			{% endif %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}
+{% block additionalJS %}
+{% if pageFlag == 'edit' %}
+<script type="text/javascript">
+	window.onload = function(e){
+		document.getElementById('id_title').value = '{% if productAndService.title %}{{productAndService.title}}{% endif %}';
+		document.getElementById('id_description').value = '{% if productAndService.description %}{{productAndService.description}}{% endif %}';
+		document.getElementById('id_HSN').value = '{% if productAndService.HSN %}{{productAndService.HSN}}{% endif %}';
+		
+	};
+</script>
+{% endif %}
+{% endblock %}

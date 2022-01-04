@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{% if pageFlag == 'add' %}Office Location Add Page{% elif pageFlag == 'view' %}Office Location View Page{% else %}Office Location Edit Page{% endif %}{% endblock %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="table-responsive p-4">
+	<table class="table ">
+		<thead>
+			{% if pageFlag == 'view' %}
+			<tr>
+				<th scope="col" class="text-muted">Company Name</th>
+				<th scope="col" class="text-muted">GST IN</th>
+				<th scope="col" class="text-muted">CIN</th>
+				<th scope="col" class="text-muted">Pan No</th>
+				<th scope="col" class="text-muted">Address</th>
+				<th scope="col" class="text-muted">Email Id</th>
+				<th scope="col" class="text-muted">Mobile Number</th>
+				<th scope="col" class="text-muted">Website</th>
+				<th scope="col" class="text-muted">bank Details</th>
+				<th scope="col" class="text-muted">Terms And Condition</th>
+				<th scope="col" class="text-muted">Action</th>
+			</tr>
+			{% endif %}
+		</thead>
+		<tbody  class="text-muted">
+			{% if pageFlag == 'add' %}
+			<tr>
+				<form action="{% url 'invoiceApp:officeLocationAddEditViewSubmitUrl' %}" method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+
+					<input type="hidden" name="redirectUrl"  value="{{request.get_full_path}}">
+					{{form|crispy}}
+					<td><button class="btn btn-success mt-2" type="submit">Submit</button></td>
+				</form>
+			</tr>
+			<!-- View -->
+			{% elif pageFlag == 'view' %}					
+			<tr>
+				<td >{% if officeLocation.company_name %}{{officeLocation.company_name}}{% endif %}</td>
+				<td >{% if officeLocation.GST_IN %}{{officeLocation.GST_IN}}{% endif %}</td>
+				<td >{% if officeLocation.CIN %}{{officeLocation.CIN}}{% endif %}</td>
+				<td >{% if officeLocation.Pan_no %}{{officeLocation.Pan_no}}{% endif %}</td>
+				<td >{% if officeLocation.address %}{{officeLocation.address}}{% endif %}</td>
+				<td >{% if officeLocation.email_id %}{{officeLocation.email_id}}{% endif %}</td>
+				<td >{% if officeLocation.mobile_number %}{{officeLocation.mobile_number}}{% endif %}</td>
+				<td >{% if officeLocation.website %}{{officeLocation.website}}{% endif %}</td>
+				<td >{% if officeLocation.bank_details %}{{officeLocation.bank_details}}{% endif %}</td>
+				<td >{% if officeLocation.terms_and_condition %}{{officeLocation.terms_and_condition|safe}}{% endif %}</td>
+				<td><a class="btn btn-primary" href="{% url 'invoiceApp:officeLocationsEditUrl' officeLocation.id %}?action=edit">Edit</a></td>
+			</tr>
+			{% else %}
+
+			<!-- Edit -->
+			<tr>
+				<form action="{% url 'invoiceApp:officeLocationAddEditViewSubmitUrl' %}" method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+					<input type="hidden" name="dataID" value="{{officeLocation.pk}}">
+					<input type="hidden" name="submitType" value="update">
+					<input type="hidden" name="redirectUrl"  value="{{request.get_full_path}}">
+					{{form|crispy}}
+					<td><button type="submit" class="btn btn-success mt-2">Submit</button></td>
+				</form>
+			</tr>
+			{% endif %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}
+
+{% block additionalJS %}
+{% if pageFlag == 'edit' %}
+<script type="text/javascript">
+	window.onload = function(e){
+		document.getElementById('id_company_name').value= '{% if officeLocation.company_name %}{{officeLocation.company_name}}{% endif %}';
+		document.getElementById('id_GST_IN').value= '{% if officeLocation.GST_IN %}{{officeLocation.GST_IN}}{% endif %}';
+		document.getElementById('id_CIN').value= '{% if officeLocation.CIN %}{{officeLocation.CIN}}{% endif %}';
+		document.getElementById('id_Pan_no').value= '{% if officeLocation.Pan_no %}{{officeLocation.Pan_no}}{% endif %}';
+		document.getElementById('id_address').value= '{% if officeLocation.address %}{{officeLocation.address.pk}}{% endif %}';
+		document.getElementById('id_email_id').value= '{% if officeLocation.email_id %}{{officeLocation.email_id}}{% endif %}';
+		document.getElementById('id_mobile_number').value= '{% if officeLocation.mobile_number %}{{officeLocation.mobile_number}}{% endif %}';
+		document.getElementById('id_website').value= '{% if officeLocation.website %}{{officeLocation.website}}{% endif %}';
+		document.getElementById('id_bank_details').value= '{% if officeLocation.bank_details %}{{officeLocation.bank_details.pk}}{% endif %}';
+		document.getElementById('id_terms_and_condition').value= '{% if officeLocation.terms_and_condition %}{{officeLocation.terms_and_condition.pk|safe}}{% endif %}';
+	};
+</script>
+{% endif %}
+{% endblock %}

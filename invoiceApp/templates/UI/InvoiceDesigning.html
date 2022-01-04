@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Muli:wght@200;300;400;500;700&display=swap" rel="stylesheet">
+
+<div onclick="printDiv()" class="print">Print Invoice</div>
+
+
+	<div id="panel">
+		<style type="text/css">
+			.print
+			{
+				width:140px;
+				height:35px;
+				line-height:32px;
+				text-align:center;
+				border:none;
+				border-radius:20px;
+				background:#f60;
+				margin-bottom:20px;
+				cursor:pointer;
+				color:#fff;
+				font-family: 'Muli', sans-serif;
+			}
+			.inwoin-green{
+				color:#003a1b;
+			}
+		</style>
+
+		<table style="border:1px solid #999999;" width="100%" border="0" cellpadding="0" cellspacing="0" class="tb">
+			<tbody>
+				<tr>
+					<td height="35" colspan="4" align="center" class="inwoin-green" style="border-bottom:1px solid #ddd; font-weight:800; font-family: 'Muli', sans-serif;">Tax Invoice</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td colspan="1">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tbody>
+								<tr>
+									<td>
+										<tr>
+											<td class="inwoin-green" height="49" valign="bottom" style="padding-top: 16px; font-size:20px; font-weight:800; font-family: 'Muli', sans-serif;">{% if invoiceInst.our_office_info.company_name %}{{invoiceInst.our_office_info.company_name}}{% endif %}</td>
+										</tr>
+										<tr>
+											<td style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;" ><b class="inwoin-green">GSTIN:</b>
+											{% if invoiceInst.our_office_info.GST_IN %}{{invoiceInst.our_office_info.GST_IN}}{%else%}-{% endif %} </td>
+										</tr>
+										<tr>
+											<td style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;" ><b class="inwoin-green">CIN:</b> {% if invoiceInst.our_office_info.CIN %}{{invoiceInst.our_office_info.CIN}}{%else%}-{% endif %} </td>
+										</tr>
+
+										<tr>
+											<td style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;"><b class="inwoin-green">Pan No:</b> {% if invoiceInst.our_office_info.Pan_no %}{{invoiceInst.our_office_info.Pan_no}}{%else%}-{% endif %}</td>
+										</tr>
+										<tr>
+											<td style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;"><b class="inwoin-green">Office:</b> {% if invoiceInst.our_office_info.address %}{{invoiceInst.our_office_info.address}}/ {{invoiceInst.our_office_info.address.address_line_2}},{{invoiceInst.our_office_info.address.city_name}},{{invoiceInst.our_office_info.address.city_name.state_name}},{{invoiceInst.our_office_info.address.city_name.state_name.country_name}},{{invoiceInst.our_office_info.address.pincode}}{%else%}-{% endif %}</td>
+										</tr>
+										<tr>
+											<td style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;"><b class="inwoin-green">Email:</b> {% if invoiceInst.our_office_info.email_id %}{{invoiceInst.our_office_info.email_id}}{%else%}-{% endif %}</td>
+										</tr>
+										<tr>
+											<td style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;"><b class="inwoin-green">Mobile No:</b> +91-{% if invoiceInst.our_office_info.mobile_number %}{{invoiceInst.our_office_info.mobile_number}}{%else%}-{% endif %}</td>
+										</tr>
+										<tr>
+											<td style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;"><b class="inwoin-green">Website:</b> {% if invoiceInst.our_office_info.website %}{{invoiceInst.our_office_info.website}}{%else%}-{% endif %}</td>
+										</tr>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+					<td>
+						<img src="{% if invoiceInst.our_office_info.image %}{{invoiceInst.our_office_info.image.url}}{% endif %}" width="240" align="right">
+					</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td height="12" colspan="4">&nbsp;</td>
+				</tr>
+				<tr>
+					<td width="3%">&nbsp;</td>
+					<td colspan="2"><table width="100%" border="0" cellpadding="0" cellspacing="0" class="tb1">
+						<tbody>
+							<tr>
+								<td><table style="border:1px solid #999999;" width="100%" border="0" cellspacing="0" cellpadding="0">
+									<tbody>
+										<tr>
+											<td width="16%" height="25"><strong class="inwoin-green"><span style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">Client Name: </span></strong></td>
+											<td width="49%"><span style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;"> {% if invoiceInst.client.client_name %}{{ invoiceInst.client.client_name }}{% else %}-{% endif %}</span></td>
+											<td width="20%"><strong class="inwoin-green"><span style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">Invoice Number:</span></strong></td>
+											<td width="15%"><span style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">{% if invoiceInst.invoice_number %}{{ invoiceInst.invoice_number }}{% else %}-{% endif %}</span></td>
+										</tr>
+										<tr>
+											<td height="25"><strong class="inwoin-green"><span style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">GST:</span></strong></td>
+											<td><span style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;"> {% if invoiceInst.client.GST %}{{ invoiceInst.client.GST }}{% else %}-{% endif %} </span></td>
+											<td><strong class="inwoin-green"><span style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">Invoice Date:</span></strong></td>
+											<td><span style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">{% if invoiceInst.invoice_date %}{{ invoiceInst.invoice_date }}{% else %}-{% endif %}</span></td>
+										</tr>
+										<tr>
+											<td height="25"><strong class="inwoin-green"><span style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">Address:</span></strong></td>
+											<td><span style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">{% if invoiceInst.client.address %}{{invoiceInst.client.address}}/ {{invoiceInst.client.address.address_line_2}},{{invoiceInst.client.address.city_name}},{{invoiceInst.client.address.city_name.state_name}},{{invoiceInst.client.address.city_name.state_name.country_name}},{{invoiceInst.client.address.pincode}}{% else %}-{% endif %}</span></td>
+											
+											<td><strong class="inwoin-green"><span style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">Due Date:</span></strong></td>
+											<td><span style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">{% if invoiceInst.due_date %}{{ invoiceInst.due_date }}{% else %}-{% endif %}</span></td>
+										</tr>
+										<tr>
+											<td height="25"><strong class="inwoin-green"><span style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">Email ID:</span></strong></td>
+											<td><span style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">{% if invoiceInst.client.email_id %}{{ invoiceInst.client.email_id }}{% else %}-{% endif %}</span></td>
+											<td><strong class="inwoin-green"><span style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">Mobile No.:</span></strong></td>
+											<td><span style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;"> {% if invoiceInst.client.mobile_number %}{{ invoiceInst.client.mobile_number }}{% else %}-{% endif %} </span></td>
+											<td>&nbsp;</td>
+											<td>&nbsp;</td>
+										</tr>
+									</tbody>
+								</table></td>
+							</tr>
+							<tr>
+								<td height="8" style="border-top:1px solid #999999;">&nbsp;</td>
+							</tr>
+							<tr>
+								<td><table style="border:1px solid #999999;" width="100%" border="1" cellpadding="0" cellspacing="0" class="tb2">
+									<tbody>
+										<tr style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">
+											<td width="2%" height="30" align="center"><strong class="inwoin-green">S.No.</strong></td>
+											<td width="10%" align="center"><strong class="inwoin-green">Title </strong></td>
+											<td width="30%" align="center"><strong class="inwoin-green">Description </strong></td>
+											<td width="10%" align="center"><strong class="inwoin-green">HSN /SAC</strong></td>
+											<td width="8%" align="center"><strong class="inwoin-green">Qty </strong></td>
+											<td width="8%" align="center"><strong class="inwoin-green">Price Per Products</strong></td>
+											<td width="13%" align="center"><strong class="inwoin-green">Amount</strong></td>
+										</tr>
+										{% for item in billedProducts %}
+										{% if item.invoice_info.client  %}
+										<tr style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">
+											
+											<td height="30" align="center">{{forloop.counter}}</td>
+											<td align="center"> {% if item.product_and_service.title %}{{ item.product_and_service.title }}{% else %}-{% endif %}</td>
+											<td align="center"> {% if item.product_and_service.description %}{{ item.product_and_service.description }}{% else %}-{% endif %}</td>
+
+											<td align="center">{% if item.product_and_service.HSN %}{{ item.product_and_service.HSN }}{% else %}-{% endif %}</td>
+											<td align="center">{% if item.quantity %}{{ item.quantity }}{% else %}-{% endif %}</td>
+											<td align="center">{% if item.price_per_product %}{{ item.price_per_product|floatformat:2 }}{% else %}-{% endif %}</td>
+											<td align="center">&#8377; {% if item.amount %}{{ item.amount|floatformat:2 }}/-{% else %}-{% endif %}</td>
+											
+										</tr>
+										{% endif %}
+										{% endfor %}
+									</tbody>
+								</table></td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>
+									<table width="100%" border="1" cellpadding="0" cellspacing="0" class="tb2">
+										<tbody>
+											<tr style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">
+												<td width="7%" height="48" align="center">&nbsp;</td>
+												<td width="60%" align="center">&nbsp;</td>
+												<td align="center" style="line-height: 23px;">Add CGST(9%) : <br>Add SGST(9%) :<br>Add IGST(18%) :</td>
+									
+												<td width="13%" align="center" style="line-height: 23px;"> {% if CGST %}&#8377 {{CGST|floatformat:2}}/-{% else %} - {% endif %} <br> {% if SGST %}&#8377 {{SGST|floatformat:2}}/-{% else %} - {% endif %} <br> {% if IGST %}&#8377 {{IGST|floatformat:2}}/-{% else %} - {% endif %} </td>
+												
+											</tr>
+											<tr style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">
+												<td height="31" align="center">&nbsp;</td>
+												<td align="center">&nbsp;</td>
+												<td align="center"><strong class="inwoin-green">Grand Total</strong></td>
+												<td align="center">&#8377; {{grand_total|floatformat:2}}/-</td>
+											</tr>
+											<!-- <tr style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">
+												<td colspan="5" height="30" align="right" style="padding-right: 15px;">Total in Words: <strong class="inwoin-green">One Lakh Forty Seven Thousand Five Hundered Rupees Only.</strong></td>
+												<td colspan="3" align="center"></td>
+											</tr> -->
+											<!-- {% comment %} -->
+											<!-- <tr style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">
+												<td width="7%" height="48" align="center">&nbsp;</td>
+												<td width="60%" align="center">&nbsp;</td>
+												<td align="center" style="line-height: 23px;">TDS Deduction Liability (10%) </td>
+												<td width="13%" align="center" style="line-height: 23px;"> &#8377 12,500 /- </td>
+											</tr>
+											<tr style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">
+												<td height="31" align="center">&nbsp;</td>
+												<td align="center">&nbsp;</td>
+												<td align="center"><strong class="inwoin-green">Total Amount</strong></td>
+												<td align="center">&#8377; 2,77,300/-</td>
+											</tr>  -->
+											<!-- {% endcomment %}  -->
+											<tr style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;">
+												<td colspan="5" height="30" align="right" style="padding-right: 15px;">Total in Words: <strong class="inwoin-green">{% if grandTotal_inWords  %}{{ grandTotal_inWords|title }}/-{% else %}-{% endif %}</strong></td>
+												<!-- <td colspan="3" align="center"></td> -->
+											</tr>
+											              
+											
+										</tbody>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td> 
+
+				
+				
+							</tr>
+						</tbody>
+					</table></td>
+					<td width="3%">&nbsp;</td>
+				</tr>
+				<tr>
+					<td colspan="4">&nbsp;</td>
+				</tr>
+				<tr>
+					<td height="32">&nbsp;</td>
+					<td style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;" width="47%" height="32"><strong class="inwoin-green">Thank You for your Business.</strong></td>
+					<td style="font-size:13px; padding: 5px 5px 5px 0px; font-family: 'Muli', sans-serif;" width="47%" align="right"><strong class="inwoin-green">For : Online Reciept</strong></td>
+					<td height="32">&nbsp;</td>
+				</tr>
+				<tr>
+					<td height="30">&nbsp;</td>
+					<td style=" font-size:10px; padding:5px; font-family: 'Muli', sans-serif;" width="47%" height="32">
+						<strong class="inwoin-green" style="font-size:13px;">Bank Details:</strong><br>
+						<strong class="inwoin-green">Account Name:</strong> {% if invoiceInst.our_office_info.bank_details.account_name %}{{invoiceInst.our_office_info.bank_details.account_name}}{%else%}-{% endif %}<br>
+						<strong class="inwoin-green">A/C NO:</strong> {% if invoiceInst.our_office_info.bank_details.account_number %}{{invoiceInst.our_office_info.bank_details.account_number}}{%else%}-{% endif %}<br>
+						<strong class="inwoin-green">BANK:</strong> {% if invoiceInst.our_office_info.bank_details.bank_name %}{{invoiceInst.our_office_info.bank_details.bank_name}}{%else%}-{% endif %}<br>
+						<strong class="inwoin-green">BRANCH:</strong> {% if invoiceInst.our_office_info.bank_details.branch %}{{invoiceInst.our_office_info.bank_details.branch}}{%else%}-{% endif %}<br>
+						<strong class="inwoin-green">IFSC CODE:</strong> {% if invoiceInst.our_office_info.bank_details.IFSC_code %}{{invoiceInst.our_office_info.bank_details.IFSC_code}}{%else%}-{% endif %}
+					</td>
+					<td style="font-size:13px; padding: 5px 0px 5px 5px; font-family: 'Muli', sans-serif;vertical-align: bottom;" width="47%" align="right"><img src="{% if invoiceInst.our_office_info.signature %}{{invoiceInst.our_office_info.signature.url}}{% endif %}" width="180"></td>
+					<td height="30">&nbsp;</td>
+				</tr>
+				<tr>
+					<td height="32">&nbsp;</td>
+					<td style=" font-size:9px; padding:5px; font-family: 'Muli', sans-serif;" width="47%" height="32">
+						<strong class="inwoin-green" style="font-size:13px;">Terms & Conditions:</strong><br>
+						{% if invoiceInst.our_office_info.terms_and_condition%}{{invoiceInst.our_office_info.terms_and_condition|safe}}{%else%}-{% endif %}
+					</td>
+					<td style="font-size:13px; padding: 5px 0px 5px 5px; font-family: 'Muli', sans-serif;vertical-align: baseline;" width="47%" align="right"><strong class="inwoin-green">Authorised Signature</strong></td>
+					<td height="32">&nbsp;</td>
+				</tr>
+				<tr>
+					<td colspan="4">&nbsp;</td>
+				</tr>
+				<tr>
+					<td colspan="4">&nbsp;</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+<script> 
+		function printDiv() { 
+			var divContents = document.getElementById("panel").innerHTML; 
+			var a = window.open('', '', 'height=800, width=800'); 
+			a.document.write('<html>'); 
+			a.document.write('<body>'); 
+			a.document.write(divContents); 
+			a.document.write('</body></html>'); 
+			a.document.close(); 
+			a.print(); 
+		} 
+	</script> 
+
+{% endblock %}

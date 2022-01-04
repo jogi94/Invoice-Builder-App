@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{% if pageFlag == 'add' %}Invoice Add Page{% elif pageFlag == 'view' %}Invoice View Page{% else %}Invoice Edit Page{% endif %}{% endblock %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="table-responsive p-4">
+	<table class="table ">
+		<thead>
+			{% if pageFlag == 'view' %}
+				<tr>
+					<th scope="col" class="text-muted"><strong>client</strong></th>
+					<th scope="col" class="text-muted">Our Office Info</th>
+					<th scope="col" class="text-muted">Invoice Number</th>
+					<th scope="col" class="text-muted">Invoice Date</th>
+					<th scope="col" class="text-muted">Due Date</th>	
+					<th scope="col" class="text-muted">Action</th>
+				</tr>
+			{% endif %}
+		</thead>	
+		<tbody  class="text-muted">
+			{% if pageFlag == 'add' %}
+			<tr>
+				<form action="{% url 'invoiceApp:invoiceAddEditSubmitUrl' %}" method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+					<input type="hidden" name="submitType" value="new">
+					<input type="hidden" name="redirectUrl"  value="{{request.get_full_path}}">
+					<!-- <td><select class="form-control" name="client">
+					        <option disabled selected>---Client Names---</option>
+					        {% for names in clientsName %}
+					        <option value="{{names.id}}">{{names.client_name}}</option>
+					        {% endfor %}
+ 					    </select>
+ 					</td>
+ 					<td><select class="form-control" name="our_office_info">
+					        <option disabled selected>---Office Locations--</option>
+					        {% for location in officeLocations %}
+					        <option value="{{location.id}}">{{location.title}}</option>
+					        {% endfor %}
+ 					    </select>
+ 					</td>
+					<td><input type="text" name="invoice_number"></td>
+					<td><input type="date" name="invoice_date"></td>
+					<td><input type="date" name="due_date"></td> -->
+					{{form|crispy}}
+					<td><button class="btn btn-success mt-2" type="submit">Submit</button></td>
+				</form>
+			</tr>
+			{% elif pageFlag == 'view' %}					
+			<tr>
+				<td >{{invoiceDetails.client}}</td>
+				<td >{{invoiceDetails.our_office_info}}</td>
+				<td >{{invoiceDetails.invoice_number}}</td>
+				<td >{{invoiceDetails.invoice_date}}</td>
+				<td >{{invoiceDetails.due_date}}</td>
+				<td><a class="btn btn-primary" href="{% url 'invoiceApp:invoiceEditUrl' invoiceDetails.id %}?action=edit">Edit</a></td>
+			</tr>
+			{% else %}
+			<!-- Edit -->
+			<tr>
+				<form action="{% url 'invoiceApp:invoiceAddEditSubmitUrl' %}" method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+					<input type="hidden" name="parentID" value="{{invoiceDetails.pk}}">
+					<input type="hidden" name="dataID" value="{{invoiceDetails.pk}}">
+					<input type="hidden" name="submitType" value="update">
+					<input type="hidden" name="redirectUrl"  value="{{request.get_full_path}}">
+					<!-- <td>
+						<select class="form-control" name="client">
+					        <option disabled selected>---Client Names---</option>
+					        {% for names in clientsName %}
+					        <option value="{{names.id}}" {% if names.id == invoiceDetails.client.pk %}selected{% endif %}>{{names.client_name}}</option>
+					        {% endfor %}
+ 					    </select>
+					<td>
+						<select class="form-control" name="our_office_info">
+					        <option disabled selected>---Office Locations--</option>
+					        {% for location in officeLocations %}
+					        <option value="{{location.id}}" {% if location.id == invoiceDetails.our_office_info.pk %}selected{% endif %}>{{location.title}}</option>
+					        {% endfor %}
+ 					    </select>
+ 					</td>
+					<td><input type="text" name="invoice_number" value="{{invoiceDetails.invoice_number}}"></td>
+					<td><input type="date" name="invoice_date" value="{{invoiceDetails.invoice_date|date:'Y-m-d'}}"></td>
+					<td><input type="date" name="due_date" value="{{invoiceDetails.due_date|date:'Y-m-d'}}"></td> -->
+					{{form|crispy}}
+					<td><button class="btn btn-success mt-2" type="submit">Submit</button></td>
+				</form>
+			</tr>
+			{% endif %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}
+{% block additionalJS %}
+{% if pageFlag == 'edit' %}
+<script type="text/javascript">
+	window.onload = function(e){
+		document.getElementById('id_client').value = '{% if invoiceDetails.client %}{{invoiceDetails.client.pk}}{% endif %}';
+		document.getElementById('id_our_office_info').value = '{% if invoiceDetails.our_office_info %}{{invoiceDetails.our_office_info.pk}}{% endif %}';
+		document.getElementById('id_invoice_number').value = '{% if invoiceDetails.invoice_number %}{{invoiceDetails.invoice_number}}{% endif %}';
+		document.getElementById('id_invoice_date').value = '{% if invoiceDetails.invoice_date %}{{invoiceDetails.invoice_date|date:'Y-m-d'}}{% endif %}';
+		document.getElementById('id_due_date').value = '{% if invoiceDetails.due_date %}{{invoiceDetails.due_date|date:'Y-m-d'}}{% endif %}';
+		
+	};
+</script>
+{% endif %}
+{% endblock %}

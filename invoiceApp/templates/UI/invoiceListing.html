@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Invocie Listing Page{% endblock %}
+{% load humanize %}
+{% block content %}
+
+<div class="col-xl-12">
+	<div class="billing shadow m-2 bg-white p-0 h-100 m-4">
+		<div class="billing-head p-4 d-flex justify-content-between  rounded-top">
+			<h5 class="">Invoice</h5>
+			<button class="btn btn-primary"><a class="btn btn-primary"  href="{% url 'invoiceApp:invoiceAddUrl' %}?action=add">Add</a></button>
+		</div>
+		<form class="form-row" method="GET" action="{% url 'invoiceApp:searchBarUrl' %}">
+			<input type="hidden" name="requestFrom" value="{{request.get_full_path}}">
+			<input type="hidden" name="model" value="invoice_details">
+			<div class="input-group mb-3">
+				<input type="text" class="form-control" placeholder="Search Query" name="searchq" value="{% if request.GET.searchq %}{{request.GET.searchq}}{% endif %}" aria-label="Search" aria-describedby="search-button">
+				<button class="btn btn-primary" type="submit" id="search-button">Search</button>
+			</div>
+
+		</form>
+		<div class="table-responsive p-4">
+
+
+
+
+			<table class="table ">
+				<thead>
+					<tr>
+						<th scope="col" class="text-muted">client</th>
+						<th scope="col" class="text-muted">Our Office Info</th>
+						<th scope="col" class="text-muted">Invoice Number</th>
+						<th scope="col" class="text-muted">Invoice Date</th>
+						<th scope="col" class="text-muted">Due Date</th>
+						<th scope="col" class="text-muted">Action</th>
+					</tr>
+				</thead>
+				<tbody  class="text-muted">
+					{% for key, val in invoiceInfo.items %}
+					<tr class="bg-light">
+						<td >{% if key.client %}{{key.client}}{% else %}-{% endif %}</td>
+						<td >{% if key.our_office_info %}{{key.our_office_info}}{% else %}-{% endif %}</td>
+						<td >{% if key.invoice_number %}{{key.invoice_number}}{% else %}-{% endif %}</td>
+						<td >{% if key.invoice_date %}{{key.invoice_date}}{% else %}-{% endif %}</td>
+						<td >{% if key.due_date %}{{key.due_date}}{% else %}-{% endif %}</td>
+						<td ><a href="{% url 'invoiceApp:invoiceEditUrl' key.pk %}?action=view">View</a>/<a href="{% url 'invoiceApp:invoiceEditUrl' key.pk %}?action=edit">Edit</a>/<a href="{% url 'invoiceApp:billedProductAddUrl' %}?invoice={{key.pk}}&action=add">Add Products</a>/<a href="{% url 'invoiceApp:deleteUrl' %}?action=delete&model=invoice_details&dataID={{key.pk}}&next={{request.get_full_path}}">Delete</a></td>
+					</tr>
+					{% for item in val %}
+					<tr>
+						<th>{{forloop.counter}}</th>
+						<td>{{item.product_and_service}}</td>
+						<td>{{item.quantity}}</td>
+						<td>{{item.applicable_GST}}</td>
+						<td>{{item.amount}}</td>
+						<td><a href="{% url 'invoiceApp:billedProductEditUrl' item.pk %}?action=view">View</a>/<a href="{% url 'invoiceApp:billedProductEditUrl' item.pk %}?invoice={{key.pk}}&action=edit">Edit</a>/<a href="{% url 'invoiceApp:deleteUrl' %}?action=delete&model=billed_product&dataID={{item.pk}}&next={{request.get_full_path}}">Delete</a></td>
+					</tr>
+					{% endfor %}
+					{% endfor %}
+
+				</tbody>
+			</table>
+		</div>
+	</div> 
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

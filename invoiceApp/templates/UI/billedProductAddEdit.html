@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}{% if pageFlag == 'add' %}Billed Product Add Page{% elif pageFlag == 'view' %}Billed Product View Page{% else %}Billed Product Edit Page{% endif %}{% endblock %}
+{% load humanize %}
+{% block content %}	
+{% comment %}
+<!-- <div class="table-responsive p-4">
+	<table class="table ">
+		<thead>
+				<tr>
+					<td scope="col" class="text-muted"><strong>Product And Service</strong></td>
+					<td scope="col" class="text-muted">Price Per Product</td>
+					<td scope="col" class="text-muted">Quantity</td>
+					<td scope="col" class="text-muted">Applicable GST</td>
+					<td scope="col" class="text-muted">Action</td>
+				</tr>
+		</thead>
+		<tbody  class="text-muted">
+				<tr> -->
+				<form action="{% url 'invoiceApp:billedProductSubmitUrl' %}?invoice={{request.GET.invoice}}" method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+					<input type="hidden" name="dataID">
+					<input type="hidden" name="redirectUrl"  value="{{request.get_full_path}}">
+					{{billedProductFormCreate|crispy}}
+					<td><button class="btn btn-success mt-2" type="submit">Submit</button></td>
+				</form>
+			<!-- </tr>
+		</tbody>
+	</table>
+</div> -->
+{% endcomment %}
+
+<div class="table-responsive p-4">
+	<table class="table ">
+		<thead>
+			{% if pageFlag == 'view' %}
+			<tr>
+				<th scope="col" class="text-muted">Invoice Info</th>
+				<th scope="col" class="text-muted">Product And Service</th>
+				<th scope="col" class="text-muted">Quantity</th>
+				<th scope="col" class="text-muted">Price Per Product</th>
+				<th scope="col" class="text-muted">Amount</th>
+				<th scope="col" class="text-muted">Applicable GST</th>
+				<th scope="col" class="text-muted">Applicable GST Amount</th>
+				<th scope="col" class="text-muted">Applicable GST Amount Plus GST</th>
+				<th scope="col" class="text-muted">Status</th>
+				<th scope="col" class="text-muted">Action</th>
+			</tr>
+			{% endif %}
+		</thead>
+		<tbody  class="text-muted">
+			{% if pageFlag == 'add' %}
+			<tr>
+				<form action="{% url 'invoiceApp:billedProductSubmitUrl' %}?invoice={{request.GET.invoice}}" method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+					<input type="hidden" name="dataID">
+					<input type="hidden" name="redirectUrl"  value="{{request.get_full_path}}">
+					{{billedProductFormCreate|crispy}}
+					<td><button class="btn btn-success mt-2" type="submit">Submit</button></td>
+				</form>
+			</tr>
+			<!-- View -->
+			{% elif pageFlag == 'view' %}					
+			<tr>
+				<td >{% if billedProducts.invoice_info %}{{billedProducts.invoice_info}}{% else %}-{% endif %}</td>
+				<td >{% if billedProducts.product_and_service %}{{billedProducts.product_and_service}}{% else %}-{% endif %}</td>
+				<td >{% if billedProducts.quantity %}{{billedProducts.quantity}}{% else %}-{% endif %}</td>
+				<td >{% if billedProducts.price_per_product %}{{billedProducts.price_per_product}}{% else %}-{% endif %}</td>
+				<td >{% if billedProducts.amount %}{{billedProducts.amount}}{% else %}-{% endif %}</td>
+				<td >{% if billedProducts.applicable_GST %}{{billedProducts.applicable_GST}}{% else %}-{% endif %}</td>
+				<td >{% if billedProducts.applicable_GST_amount %}{{billedProducts.applicable_GST_amount}}{% else %}-{% endif %}</td>
+				<td >{% if billedProducts.applicable_GST_amount_plus_GST %}{{billedProducts.applicable_GST_amount_plus_GST}}{% else %}-{% endif %}</td>
+				<td >{% if billedProducts.status %}{{billedProducts.status}}{% else %}-{% endif %}</td>
+				<td ><a href="{% url 'invoiceApp:billedProductEditUrl' billedProducts.pk %}?action=edit">Edit</a></td>
+			</tr>
+			{% else %}
+
+			<!-- Edit -->
+			<tr>
+				<form action="{% url 'invoiceApp:billedProductSubmitUrl' %}?invoice={{request.GET.invoice}}" method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+					<input type="hidden" name="dataID" value="{{billedProducts.pk}}">
+					<input type="hidden" name="submitType" value="update">
+					<input type="hidden" name="redirectUrl"  value="{{request.get_full_path}}">
+					{{billedProductFormCreate|crispy}}
+					<td><button class="btn btn-success mt-2" type="submit">Submit</button></td>
+				</form>
+			</tr>
+			{% endif %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}
+
+{% block additionalJS %}
+{% if pageFlag == 'edit' %}
+<script type="text/javascript">
+	window.onload = function(e){
+		document.getElementById('id_product_and_service').value = '{% if billedProducts.product_and_service %}{{billedProducts.product_and_service.pk}}{% endif %}';
+		document.getElementById('id_quantity').value = '{% if billedProducts.quantity %}{{billedProducts.quantity}}{% endif %}';
+		document.getElementById('id_price_per_product').value = '{% if billedProducts.price_per_product %}{{billedProducts.price_per_product}}{% endif %}';
+		document.getElementById('id_applicable_GST').value = '{% if billedProducts.applicable_GST %}{{billedProducts.applicable_GST}}{% endif %}';
+		document.getElementById('id_status').value = '{% if billedProducts.status %}{{billedProducts.status}}{% endif %}';
+	};
+</script>
+{% endif %}
+{% endblock %}
